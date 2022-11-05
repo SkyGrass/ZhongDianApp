@@ -10,6 +10,34 @@
           is-link
           @click="openSource"
         />
+        <van-row>
+          <van-col span="12">
+            <van-field
+              label-width="40px"
+              label="开始"
+              name="dBeginDate"
+              is-link
+              placeholder="开始时间"
+              :value="startDateStr"
+              input-align="right"
+              @click="show1 = true"
+              readonly
+            />
+          </van-col>
+          <van-col span="12">
+            <van-field
+              label-width="40px"
+              label="结束"
+              name="dEndDate"
+              is-link
+              placeholder="结束时间"
+              :value="endDateStr"
+              input-align="right"
+              @click="show2 = true"
+              readonly
+            />
+          </van-col>
+        </van-row>
         <van-field
           class="item"
           type="text"
@@ -21,7 +49,6 @@
           placeholder="扫描或录入条码"
           id="ele_cBarcode"
           clearable
-          @focus="onFocus('ele_cBarcode')"
           @keyup.enter="queryInv"
         >
           <template #button>
@@ -29,67 +56,77 @@
           </template>
         </van-field>
       </div>
-      <van-divider v-if="curQueryTypeId == 1 && list.length > 0">货位：{{ form.cPosName }}</van-divider>
-      <van-divider v-if="curQueryTypeId == 2 && list.length > 0">批号：{{ form.cBatch }}</van-divider>
       <van-empty class="custom-image" description="没有记录" v-if="list.length <= 0" />
 
-      <ul
-        v-if="curQueryTypeId == 3 && form.cInvCode != ''"
-        style="padding: 5px; font-size: 14px"
-        class="van-hairline--bottom"
-      >
-        <li style="padding: 2px">存货编码：{{ form.cInvCode }}</li>
-        <li style="padding: 2px">存货名称：{{ form.cInvName }}</li>
-        <li style="padding: 2px">规格型号：{{ form.cInvStd }}</li>
-        <li style="padding: 2px">计量单位：{{ form.cComUnitName }}</li>
-      </ul>
-
       <van-list>
-        <ul
-          v-for="(item, index) in list"
-          :key="index"
-          style="padding: 5px; font-size: 14px"
-          class="van-hairline--bottom"
-        >
-          <li
-            v-if="curQueryTypeId == 2 || curQueryTypeId == 3"
-            style="padding: 2px; width: 80%; display: inline-flex; justify-content: space-between"
-          >
-            <div style="font-weight: bold">仓库：{{ item.cWhName }}</div>
-            <div style="font-weight: bold">仓位：{{ item.cPosName }}</div>
-          </li>
+        <ul v-for="(item, index) in list" :key="index" style="padding: 5px; font-size: 14px">
+          <li v-if="curQueryTypeId == 1" style="padding: 2px">仓位：{{ barcode }}</li>
           <li v-if="curQueryTypeId != 3" style="padding: 2px">存货编码：{{ item.cInvCode }}</li>
           <li v-if="curQueryTypeId != 3" style="padding: 2px">存货名称：{{ item.cInvName }}</li>
           <li v-if="curQueryTypeId != 3" style="padding: 2px">规格型号：{{ item.cInvStd }}</li>
           <li v-if="curQueryTypeId != 3" style="padding: 2px">计量单位：{{ item.cComUnitName }}</li>
 
-          <li style="padding: 2px; width: 80%; display: inline-flex; justify-content: space-between">
-            <div v-if="curQueryTypeId != 2">批号：{{ item.cBatch }}</div>
-            <div>数量：{{ item.iQuantity }}</div>
-          </li>
+          <ul v-for="(item1, index1) in item.Entry" :key="index1" style="padding: 5px; font-size: 14px">
+            <li style="padding: 2px; width: 80%; display: inline-flex; justify-content: space-between">
+              <div style="font-weight: bold">仓库：{{ item1.cWhName }}</div>
+              <div style="font-weight: bold">数量：{{ item1.iQuantity }}</div>
+            </li>
+            <ul>
+              <li v-for="(item2, index2) in item1.Detail" :key="index2" style="padding: 3px; font-size: 14px">
+                {{ item2.cDetail }}
+              </li>
+            </ul>
+          </ul>
+          <van-divider />
         </ul>
       </van-list>
     </div>
+
+    <van-popup v-model="show1" position="bottom" :style="{ height: '50%' }">
+      <van-datetime-picker
+        v-model="form.dBeginDate"
+        type="date"
+        title="选择年月日"
+        @confirm="onConfirm1"
+        @cancel="show1 = false"
+      />
+    </van-popup>
+    <van-popup v-model="show2" position="bottom" :style="{ height: '50%' }">
+      <van-datetime-picker
+        v-model="form.dEndDate"
+        type="date"
+        title="选择年月日"
+        @confirm="onConfirm2"
+        @cancel="show2 = false"
+      />
+    </van-popup>
     <sourcerow ref="sourcerow" :source="sourceList" @choose="pickSource" @cancel="cancelPicker" />
   </div>
 </template>
 <script>
-import { getCurrentStock } from '@/api/query'
+import { getCurrentStockDetail } from '@/api/query'
 import sourcerow from '@/components/sourcerow'
+import dayjs from 'dayjs'
 export default {
-  name: `stock`,
+  name: `detail`,
   components: { sourcerow },
   data() {
+    this.barcode = ''
     return {
       sourceList: [
         { label: '货位', value: '1' },
-        { label: '批号', value: '2' },
-        { label: '存货', value: '3' }
+        { label: '存货', value: '2' }
       ],
       curQueryType: '货位',
       curQueryTypeId: '1',
+
+      show1: false,
+      show2: false,
       form: {
         cBarcode: '',
+
+        dBeginDate: dayjs().add(-7, 'day').toDate(),
+        dEndDate: new Date(),
 
         cPosCode: '',
         cPosName: '',
@@ -99,13 +136,29 @@ export default {
         cComUnitName: '',
         cInvCode: '',
         cInvName: '',
-        cInvStd: ''
+        cInvStd: '',
+        barcode: ''
       },
       list: [],
       curEle: ''
     }
   },
-  watch: {},
+  watch: {
+    show1(newV, oldV) {
+      if (newV) {
+        if (this.form.dBeginDate == '' || this.form.dBeginDate == null) {
+          this.form.dBeginDate = new dayjs().toDate()
+        }
+      }
+    },
+    show2(newV, oldV) {
+      if (newV) {
+        if (this.form.dEndDate == '' || this.form.dEndDate == null) {
+          this.form.dEndDate = new dayjs().toDate()
+        }
+      }
+    }
+  },
   methods: {
     setFocus(flag) {
       if (this.curEle != '') {
@@ -121,7 +174,9 @@ export default {
     },
     clearForm() {
       for (const key in this.form) {
-        this.form[key] = ''
+        if (key != 'dBeginDate' && key != 'dEndDate') {
+          this.form[key] = ''
+        }
       }
       this.list = []
       this.curEle = 'ele_cBarcode'
@@ -139,34 +194,47 @@ export default {
         })
       }
       this.list = []
-      getCurrentStock({ cType: this.curQueryTypeId, cBarcode: this.form.cBarcode })
+      getCurrentStockDetail({
+        cType: this.curQueryTypeId,
+        cBarcode: this.form.cBarcode,
+        dBeginDate: this.startDateStr,
+        dEndDate: this.endDateStr
+      })
         .then(({ Data }) => {
+          this.barcode = this.form.cBarcode
           this.clearForm()
-          if (Data != null && Data.length > 0) {
-            this.list = Data
-            if (this.curQueryTypeId == 1) {
-              this.form.cPosCode = Data[0]['cPosCode']
-              this.form.cPosName = Data[0]['cPosName']
-            } else if (this.curQueryTypeId == 2) {
-              this.form.cBatch = Data[0]['cBatch']
-            } else {
-              const { cComUnitCode, cComUnitName, cInvCode, cInvName, cInvStd } = Data[0]
-              this.form.cComUnitCode = cComUnitCode
-              this.form.cComUnitName = cComUnitName
-              this.form.cInvCode = cInvCode
-              this.form.cInvName = cInvName
-              this.form.cInvStd = cInvStd
+          if (Data != null) {
+            try {
+              Data = JSON.parse(Data)
+            } catch (e) {
+              Data = []
+            }
+            if (Data.length > 0) {
+              this.list = Data
+              if (this.curQueryTypeId == 1) {
+                this.form.cPosCode = Data[0]['cPosCode']
+                this.form.cPosName = Data[0]['cPosName']
+              } else if (this.curQueryTypeId == 2) {
+                this.form.cBatch = Data[0]['cBatch']
+              } else {
+                const { cComUnitCode, cComUnitName, cInvCode, cInvName, cInvStd } = Data[0]
+                this.form.cComUnitCode = cComUnitCode
+                this.form.cComUnitName = cComUnitName
+                this.form.cInvCode = cInvCode
+                this.form.cInvName = cInvName
+                this.form.cInvStd = cInvStd
 
-              this.list = Data.map(f => {
-                return {
-                  cWhCode: f.cWhCode,
-                  cWhName: f.cWhName,
-                  cPosCode: f.cPosCode,
-                  cPosName: f.cPosName,
-                  cBatch: f.cBatch,
-                  iQuantity: f.iQuantity
-                }
-              })
+                this.list = Data.map(f => {
+                  return {
+                    cWhCode: f.cWhCode,
+                    cWhName: f.cWhName,
+                    cPosCode: f.cPosCode,
+                    cPosName: f.cPosName,
+                    cBatch: f.cBatch,
+                    iQuantity: f.iQuantity
+                  }
+                })
+              }
             }
             this.curEle = 'ele_cBarcode'
           } else {
@@ -215,9 +283,29 @@ export default {
     },
     cancelPicker() {
       this.setFocus()
+    },
+    formatDate(date) {
+      return dayjs(date).format('YYYY-MM-DD')
+    },
+    onConfirm1(date) {
+      this.show1 = false
+      this.onLoad()
+    },
+    onConfirm2(date) {
+      this.show2 = false
+      this.onLoad()
     }
   },
-  computed: {},
+  computed: {
+    startDateStr() {
+      if (this.form.dBeginDate == '' || this.form.dBeginDate == null) return ''
+      return this.formatDate(this.form.dBeginDate)
+    },
+    endDateStr() {
+      if (this.form.dEndDate == '' || this.form.dEndDate == null) return ''
+      return this.formatDate(this.form.dEndDate)
+    }
+  },
   created() {},
   mounted() {
     window.scanResult = result => {

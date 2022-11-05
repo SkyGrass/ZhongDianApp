@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div class="container">
     <van-form @submit="onSubmit" label-width="50px">
       <div class="top">
@@ -9,6 +9,7 @@
           label="条件"
           ref="keyword"
           placeholder="扫描或输入关键词回车查询"
+          @clear="keyword = ''"
           @keyup.enter="onSubmit"
         />
       </div>
@@ -45,14 +46,14 @@
             <ul
               style="padding: 5px; font-size: 14px"
               class="van-hairline--bottom"
-              v-for="(source, index) in sourceList"
+              v-for="source in sourceList"
               :key="source.ID"
               :source="source"
               @click="onChoose(source)"
             >
               <li style="padding: 2px">日期：{{ source.dDate }}</li>
               <li style="padding: 2px">单号：{{ source.cCode }}</li>
-              <li style="padding: 2px">客户：{{ source.cCusCode }}||{{ source.cCusName }}</li>
+              <li style="padding: 2px">供应商：{{ source.cVenCode }}||{{ source.cVenName }}</li>
             </ul>
           </van-list>
           <van-button class="reload">
@@ -67,8 +68,6 @@
         </div>
       </div>
     </van-form>
-    <!-- <van-calendar v-model="show1" /> -->
-    <!-- <van-calendar v-model="show2" @confirm="onConfirm2" /> -->
     <van-popup v-model="show1" position="bottom" :style="{ height: '50%' }">
       <van-datetime-picker
         v-model="form.dBeginDate"
@@ -91,9 +90,9 @@
 </template>
 <script>
 import dayjs from 'dayjs'
-import { getDispatchHead } from '@/api/so'
+import { getPuArrivalHead } from '@/api/in'
 export default {
-  name: `so`,
+  name: `in`,
   data() {
     return {
       keyword: '',
@@ -136,8 +135,8 @@ export default {
   },
   methods: {
     onLoad() {
-      this.sourceList = [] 
-      getDispatchHead(
+      this.sourceList = []
+      getPuArrivalHead(
         Object.assign(
           {},
           { dBeginDate: this.startDateStr, dEndDate: this.endDateStr, FRob: this.rob },
@@ -169,7 +168,7 @@ export default {
     },
     onChoose(row) {
       this.$router.push({
-        name: 'so_form',
+        name: 'in_form',
         query: Object.assign({}, row, {
           bRob: this.rob,
           redblue: this.rob
@@ -178,7 +177,7 @@ export default {
     }
   },
   created() {
-    this.rob = this.$route.query.redblue || 1
+    this.rob = this.$route.query.redblue
   },
   mounted() {
     this.$nextTick(() => {

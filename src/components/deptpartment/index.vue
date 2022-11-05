@@ -2,7 +2,7 @@
   <van-popup v-model="show" position="center" :style="{ height: '50%', width: '100%' }">
     <van-picker
       show-toolbar
-      title="选择桶状态"
+      title="选择部门"
       :columns="columns"
       :default-index="defaulIndex"
       @cancel="cancel"
@@ -12,7 +12,7 @@
 </template>
 <script>
 export default {
-  name: `bucketstatus`,
+  name: `deptpartment`,
   props: {
     source: {
       type: Array,
@@ -37,7 +37,7 @@ export default {
   computed: {
     columns() {
       return this.$props.source.map(m => {
-        return m.FName
+        return `${m.cDepCode}||${m.cDepName}`
       })
     }
   },
@@ -52,7 +52,7 @@ export default {
       this.$emit('cancel')
       this.show = false
     },
-    select(value, index) {
+    select(value, index) { 
       this.$emit('choose', this.$props.source[index])
       this.show = false
     }

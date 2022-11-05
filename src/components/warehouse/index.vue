@@ -1,8 +1,9 @@
 <template>
-  <van-popup v-model="show" position="center" :style="{ height: '50%', width: '100%' }">
+  <van-popup v-model="show" position="center"
+   :style="{ height: '50%', width: '100%' }">
     <van-picker
       show-toolbar
-      title="选择桶类别"
+      title="选择仓库"
       :columns="columns"
       :default-index="defaulIndex"
       @cancel="cancel"
@@ -12,7 +13,7 @@
 </template>
 <script>
 export default {
-  name: `buckettype`,
+  name: `warehouse`,
   props: {
     source: {
       type: Array,
@@ -37,7 +38,7 @@ export default {
   computed: {
     columns() {
       return this.$props.source.map(m => {
-        return `${m.FName}`
+        return `${m.cWhCode}||${m.cWhName}`
       })
     }
   },

@@ -34,7 +34,7 @@ export default {
   components: { redblue },
   data() {
     return {
-      list: [],
+      list: []
     }
   },
   computed: {
@@ -64,7 +64,13 @@ export default {
 
     getMenu({}).then(({ Data }) => {
       this.list = Data.filter(f => f.FParentID == fromId || 0).map(m => {
-        return { id: m.FItemID, icon: m.FImage || 'icon_list.png', label: m.FName, path: m.FUrl }
+        return {
+          id: m.FItemID,
+          icon: m.FImage || 'icon_list.png',
+          label: m.FName,
+          path: m.FUrl,
+          whCode: m.FDefaultWhCode
+        }
       })
     })
   }

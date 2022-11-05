@@ -15,6 +15,7 @@ const getters = {
 
   wareHouseList: state => state.base.wareHouseList,
 
-  numProps: state => ['iChangRate', 'iNum']
+  defWhCode: state => state.runtime.defWhCode,
+  numProps: state => ['iChangRate', 'iNum', 'iLabelQuantity', 'iOddQuantity', 'iStockQuantity', 'iPlanQuantity', 'iCommitQuantity']
 }
 export default getters

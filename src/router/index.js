@@ -36,7 +36,6 @@ router.beforeEach((to, from, next) => {
   if (from.meta.keepAlive) {
     const $content = document.querySelector('.list') // 列表的外层容器
     const scrollTop = $content ? $content.scrollTop : 0
-    console.log('scrollTop', scrollTop)
     from.meta.scrollTop = scrollTop
   }
   next()

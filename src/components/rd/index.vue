@@ -2,7 +2,7 @@
   <van-popup v-model="show" position="center" :style="{ height: '50%', width: '100%' }">
     <van-picker
       show-toolbar
-      title="选择查询类型"
+      :title="title"
       :columns="columns"
       :default-index="defaulIndex"
       @cancel="cancel"
@@ -12,7 +12,7 @@
 </template>
 <script>
 export default {
-  name: `sourcerow`,
+  name: `rd`,
   props: {
     source: {
       type: Array,
@@ -24,7 +24,22 @@ export default {
   },
   data() {
     return {
-      show: false
+      show: false,
+      flag: 1
+    }
+  },
+  computed: {
+    columns() {
+      return this.$props.source.map(m => {
+        return `${m.cRdCode}||${m.cRdName}`
+      })
+    },
+    title() {
+      if (this.flag == '1') {
+        return '选择入库方式'
+      } else if (this.flag == '0') {
+        return '选择出库方式'
+      }
     }
   },
   watch: {
@@ -34,15 +49,11 @@ export default {
       }
     }
   },
-  computed: {
-    columns() {
-      return this.$props.source.map(m => {
-        return `${m.label}`
-      })
-    }
-  },
   methods: {
-    open() {
+    open(_flag) {
+      if (_flag != void 0) {
+        this.flag = _flag
+      }
       this.show = true
     },
     dismiss() {

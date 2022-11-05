@@ -9,8 +9,11 @@ import router from './router'
 import store from './store'
 import './utils/storage'
 // import './permission'
+
 import { title } from './mixins/title'
+import { beforeRouteLeave } from './mixins/beforeRouteLeave'
 Vue.mixin(title)
+Vue.mixin(beforeRouteLeave)
 
 // 设置 js中可以访问 $cdn
 import { $cdn } from '@/config'
@@ -26,33 +29,7 @@ import 'lib-flexible/flexible.js'
 // filters
 import './filters'
 Vue.config.productionTip = false
-
-Vue.directive('focus', {
-  inserted: function (el, { modifiers: { noKeyboard } }) {
-    try {
-      const tagName = el.tagName
-      if (tagName !== 'INPUT') {
-        let child = el.children[0]
-        if (child && child.tagName === 'INPUT') {
-          el = child
-        }
-      }
-      el.focus()
-      // 不弹起软键盘
-      if (noKeyboard) {
-        el.setAttribute('readonly', 'readonly')
-        var timer = null
-        timer = setTimeout(() => {
-          el.removeAttribute('readonly')
-          clearTimeout(timer)
-        }, 100)
-      }
-    } catch (error) {
-      throw new Error(error)
-    }
-  }
-})
-
+ 
 new Vue({
   el: '#app',
   router,

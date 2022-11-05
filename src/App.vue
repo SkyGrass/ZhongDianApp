@@ -30,7 +30,6 @@ export default {
   watch: {},
   methods: {},
   created() {
-    console.log('created')
     let { query, path } = this.$route
     if (path != '/home' || Object.keys(query).length <= 0) {
       query = MyLStorage.get('model')

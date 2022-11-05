@@ -1,10 +1,19 @@
 // axios
 import request from '@/utils/request'
 
-//桶生命周期查询
-export function getBucketRecord(data) {
+//库存查询
+export function getCurrentStock(data) {
   return request({
-    url: 'GetBucketRecord',
+    url: 'GetCurrentStock',
+    method: 'post',
+    data
+  })
+}
+
+//库存台账
+export function getCurrentStockDetail(data) {
+  return request({
+    url: 'GetCurrentStockDetail',
     method: 'post',
     data
   })

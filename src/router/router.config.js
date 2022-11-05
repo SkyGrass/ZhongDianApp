@@ -1,8 +1,11 @@
 import Home from '@/views/home'
 import SubHome from '@/views/home/subIndex'
 
-import So from '@/views/so'
-import Query from '@/views/query'
+import PuPrint from '@/views/puprint'
+import In from '@/views/in'
+import Out from '@/views/out'
+import Cm from '@/views/cm'
+import StockQuery from '@/views/query'
 /**
  * 基础路由
  * @type { *[] }
@@ -35,81 +38,117 @@ const routerMap = [
 
 const dynamicRouterMap = [
   {
-    path: '/so',
-    name: 'so',
-    component: So,
+    path: '/puprint',
+    name: 'puprint',
+    component: PuPrint,
     meta: {
-      title: '销售发出',
+      title: '进货单',
       redblue: false,
       keepAlive: false
     }
   },
   {
-    path: '/so_form',
-    name: 'so_form',
-    component: () => import('@/views/so/form'),
+    path: '/puprint_form',
+    name: 'puprint_form',
+    component: () => import('@/views/puprint/form'),
     meta: {
-      title: '销售发出',
+      title: '到货打印',
       redblue: false,
       keepAlive: false
     }
   },
   {
-    path: '/so_back',
-    name: 'so_back',
-    component: () => import('@/views/soback/form'),
+    path: '/pureprint_form',
+    name: 'pureprint_form',
+    component: () => import('@/views/pureprint/form'),
     meta: {
-      title: '销售回收',
+      title: '标签打印',
       redblue: false,
       keepAlive: false
     }
   },
   {
-    path: '/update',
-    name: 'update_form',
-    component: () => import('@/views/update/form'),
+    path: '/in',
+    name: 'in',
+    component: In,
     meta: {
-      title: '桶状态变更',
+      title: '采购入库',
+      redblue: true,
+      keepAlive: false
+    }
+  },
+  {
+    path: '/in_form',
+    name: 'in_form',
+    component: () => import('@/views/in/form'),
+    meta: {
+      title: '采购入库',
+      keepAlive: false
+    }
+  },
+  {
+    path: '/out',
+    name: 'out',
+    component: Out,
+    meta: {
+      title: '发料',
+      redblue: true,
+      keepAlive: false
+    }
+  },
+  {
+    path: '/out_form',
+    name: 'out_form',
+    component: () => import('@/views/out/form'),
+    meta: {
+      title: '发料',
+      keepAlive: false
+    }
+  }, {
+    path: '/cm',
+    name: 'cm',
+    component: Cm,
+    meta: {
+      title: '点料',
       redblue: false,
       keepAlive: false
     }
   },
   {
-    path: '/clear_back',
-    name: 'clear_back',
-    component: () => import('@/views/clearback/form'),
+    path: '/cm_form',
+    name: 'cm_form',
+    component: () => import('@/views/cm/form'),
     meta: {
-      title: '清洗回收',
+      title: '点料',
+      keepAlive: false
+    }
+  },
+  {
+    path: '/trans',
+    name: 'tran_form',
+    component: () => import('@/views/trans/form'),
+    meta: {
+      title: '货位调整',
       redblue: false,
       keepAlive: false
     }
   },
   {
-    path: '/other_back',
-    name: 'other_back',
-    component: () => import('@/views/otherback/form'),
+    path: '/stock',
+    name: 'stock',
+    component: StockQuery,
     meta: {
-      title: '其他回收',
+      title: '库存查询',
       redblue: false,
       keepAlive: false
     }
   },
   {
-    path: '/scan_scrap',
-    name: 'scan_scrap',
-    component: () => import('@/views/scanscrap/form'),
+    path: '/detail',
+    name: 'detail',
+    component: () => import('@/views/query/detail'),
     meta: {
-      title: '扫码报废',
-      redblue: false,
-      keepAlive: false
-    }
-  },
-  {
-    path: '/query',
-    name: 'query',
-    component: Query,
-    meta: {
-      title: '信息查询',
+      title: '库存台账',
       redblue: false,
       keepAlive: false
     }
