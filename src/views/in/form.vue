@@ -418,7 +418,7 @@ export default {
         this.cacheList.push(Object.assign({}, this.form))
       }
 
-      this.clearForm()
+      this.clearForm(true)
     },
     onSave() {
       this.$dialog
@@ -944,7 +944,7 @@ export default {
 
   .list0,
   .list {
-    height: calc(100vh - 210px);
+    height: calc(100vh - 160px);
     overflow: scroll;
   }
 

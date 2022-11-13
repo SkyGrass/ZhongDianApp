@@ -157,7 +157,7 @@
         </div>
       </van-tab>
       <van-tab title="源单页">
-        <div class="list">
+        <div class="sourceList">
           <ul style="padding: 5px; font-size: 14px">
             <li style="padding: 2px">日期：{{ queryForm.FDate }}</li>
             <li style="padding: 2px">单号：{{ queryForm.FMOBillNo }}</li>
@@ -323,10 +323,11 @@ export default {
       }
       const position = this.cacheList.findIndex(f => {
         return (
-          f.cSourceBillID == this.form.cSourceBillID &&
-          f.cSourceBillEntryID == this.form.cSourceBillEntryID &&
-          f.cInvCode == this.form.cInvCode &&
-          f.cBatch == this.form.cBatch
+          // f.cSourceBillID == this.form.cSourceBillID &&
+          // f.cSourceBillEntryID == this.form.cSourceBillEntryID &&
+          // f.cInvCode == this.form.cInvCode &&
+          // f.cBatch == this.form.cBatch
+          f.FBarcode == this.form.barcode
         )
       })
       // if (position > -1) {
@@ -335,8 +336,7 @@ export default {
       //this.$set(this.cacheList, position, Object.assign({}, r))
       // } else {
       this.cacheList.push(Object.assign({}, this.form))
-      // }
-
+      // } 
       let row = this.sourceList[this.form.position]
       row.FIsScan = !0
       this.$set(this.sourceList, position, row)
@@ -773,7 +773,7 @@ export default {
   }
 
   .sourceList {
-    height: calc(100vh);
+    height: calc(100vh - 50px);
     overflow: scroll;
   }
 

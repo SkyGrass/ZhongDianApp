@@ -52,6 +52,8 @@
             >
               <li style="padding: 2px">日期：{{ source.dDate }}</li>
               <li style="padding: 2px">单号：{{ source.cCode }}</li>
+              <li style="padding: 2px">产品编号：{{ source.cInvCode }}</li>
+              <li style="padding: 2px">产品名称：{{ source.cInvName }}</li>
               <li style="padding: 2px">生产部门：{{ source.cDepCode }}||{{ source.cDepName }}</li>
             </ul>
           </van-list>
