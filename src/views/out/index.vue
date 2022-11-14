@@ -50,11 +50,18 @@
               :source="source"
               @click="onChoose(source)"
             >
-              <li style="padding: 2px">日期：{{ source.dDate }}</li>
-              <li style="padding: 2px">单号：{{ source.cCode }}</li>
+             <li style="padding: 2px; width: 80%; display: inline-flex; justify-content: space-between">
+                <div>单号：{{ source.cCode }}</div>
+                <div>行号：{{ source.iVouchRowno }}</div>
+              </li>
+              <li style="padding: 2px">生产部门：{{ source.cDepCode }}||{{ source.cDepName }}</li>
+              <li style="padding: 2px">日期：{{ source.dDate }}</li> 
               <li style="padding: 2px">产品编号：{{ source.cInvCode }}</li>
               <li style="padding: 2px">产品名称：{{ source.cInvName }}</li>
-              <li style="padding: 2px">生产部门：{{ source.cDepCode }}||{{ source.cDepName }}</li>
+              <li style="padding: 2px; width: 80%; display: inline-flex; justify-content: space-between">
+                <div>批号：{{ source.cBatch }}</div>
+                <div>数量：{{ source.iQuantity }}</div>
+              </li>
             </ul>
           </van-list>
           <van-button class="reload">
